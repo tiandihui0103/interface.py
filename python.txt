@@ -1,0 +1,77 @@
+python中，每个py文件被称之为模块，每个具有__init__.py文件的目录被称为包
+
+# coding:utf-8
+import unittest
+from selenium import webdriver
+from testCase import * #由于在testCase包中的__init__.py中使用了导入语句，所以才可以这样写
+def printme( str ):
+   "打印任何传入的字符串"
+   print(str);
+   return;
+printme("我要调用用户自定义函数!");
+
+在说unittest之前，先说几个概念：
+
+TestCase 也就是测试用例
+
+TestSuite 多个测试用例集合在一起，就是TestSuite
+
+TestLoader是用来加载TestCase到TestSuite中的
+
+TestRunner是来执行测试用例的,测试的结果会保存到TestResult实例中，包括运行了多少测试用例，成功了多少，失败了多少等信息
+
+每一个包目录下面都会有一个__init__.py的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录(文件夹)，而不是一个包。__init__.py可以是空文件，也可以有Python代码，因为__init__.py本身就是一个模块，而它的模块名就是对应包的名字。调用包就是执行包下的__init__.py文件。
+
+jeffrey w, [06.04.19 10:48]
+import unittest
+from nose_parameterized import parameterized, param
+
+class TestAdd(unittest.TestCase):
+    @parameterized.expand([
+        param("11", 11),
+        param("10", 16, base=16),
+    ])
+    def test_int(self, str_val, expected, base=10):
+        self.assertEqual(int(str_val, base), expected)
+
+
+if name == 'main':
+unittest.main()
+
+====================================================================================================
+import unittest,HTMLTestRunner
+from nose_parameterized import parameterized
+
+def login(username,passwd):
+    if username=='niuhanyang' and passwd=='123456':
+        return '138'
+    return False
+def choujiang(sign):
+    if sign == '138':
+        return True
+    return False
+
+class My(unittest.TestCase):
+    def alogin(self, username, passwd, hope):
+        sign = login(username, passwd)
+        return sign
+    @parameterized.expand(
+            [
+                ['niuhanyang','123456','138'],
+                ['niuhanyang','',False],
+                ['','', False],
+                ['niuhanyang','123',False]
+            ]
+        )
+    def test_choujiang(self,username,passwd,hope):#只有test开头的用例才会被执行
+        sign=self.alogin(username,passwd,hope) #获取前一条用例的执行结果，赋值给sign
+        cj_res=choujiang(sign)
+        self.assertEqual(cj_res,True)
+if __name__=='__main__':
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(My))
+    fw = open('获取结果.html', 'wb')
+    runner = HTMLTestRunner.HTMLTestRunner(stream=fw, title='获取前一条用例执行结果')
+    runner.run(suite)
+=======================================================================================================
+
